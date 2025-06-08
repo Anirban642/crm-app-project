@@ -1,8 +1,14 @@
 import React, { useEffect } from 'react';
-import { Typography, Paper, Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchProducts } from '../features/products/productSlice';
+import {
+  fetchProducts,
+  deleteProduct,
+} from '../features/products/productSlice';
+
+import {
+  Table, TableBody, TableCell, TableHead, TableRow, Button, Typography, Box,
+} from '@mui/material';
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -14,70 +20,74 @@ const Products = () => {
     }
   }, [dispatch, status]);
 
+  const handleDelete = (id) => {
+    if (window.confirm('Are you sure you want to delete this product?')) {
+      dispatch(deleteProduct(id));
+    }
+  };
+
   return (
-    <Paper sx={{ p: 4 }}>
+    <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
-        Products List
+        Products
       </Typography>
 
-      <Box sx={{ mb: 2 }}>
-        <Button variant="contained" component={Link} to="/products/add">
-          Add New Product
-        </Button>
-      </Box>
+      <Button
+        variant="contained"
+        color="primary"
+        component={Link}
+        to="/products/add"
+        sx={{ mb: 2 }}
+      >
+        Add New Product
+      </Button>
 
-      {status === 'loading' && <Typography>Loading products...</Typography>}
+      {status === 'loading' && <Typography>Loading...</Typography>}
       {status === 'failed' && <Typography color="error">{error}</Typography>}
 
-      {status === 'succeeded' && products.length === 0 && (
-        <Typography>No products available.</Typography>
-      )}
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Title</TableCell>
+            <TableCell>Brand</TableCell>
+            <TableCell>Price</TableCell>
+            <TableCell>Category</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
 
-      {status === 'succeeded' && products.length > 0 && (
-        <TableContainer sx={{ maxHeight: 440 }}>
-          <Table stickyHeader aria-label="products table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Title</TableCell>
-                <TableCell>Price</TableCell>
-                <TableCell>Stock</TableCell>
-                <TableCell>Brand</TableCell>
-                <TableCell>Category</TableCell>
-                <TableCell>Discount %</TableCell>
-                <TableCell>Rating</TableCell>
-                <TableCell align="center">Actions</TableCell>
-              </TableRow>
-            </TableHead>
+        <TableBody>
+          {products.map((prod) => (
+            <TableRow key={prod.id}>
+              <TableCell>{prod.title}</TableCell>
+              <TableCell>{prod.brand}</TableCell>
+              <TableCell>${prod.price}</TableCell>
+              <TableCell>{prod.category}</TableCell>
+              <TableCell>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  component={Link}
+                  to={`/products/${prod.id}`}
+                >
+                  Edit
+                </Button>
 
-            <TableBody>
-              {products.map((product) => (
-                <TableRow key={product.id} hover>
-                  <TableCell>{product.title}</TableCell>
-                  <TableCell>${product.price.toFixed(2)}</TableCell>
-                  <TableCell>{product.stock}</TableCell>
-                  <TableCell>{product.brand}</TableCell>
-                  <TableCell>{product.category}</TableCell>
-                  <TableCell>{product.discountPercentage}%</TableCell>
-                  <TableCell>{product.rating}</TableCell>
-                  <TableCell align="center">
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      component={Link}
-                      to={`/products/edit/${product.id}`}
-                      sx={{ mr: 1 }}
-                    >
-                      Edit
-                    </Button>
-                    {/* You can add delete button here if you want */}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
-    </Paper>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  color="error"
+                  sx={{ ml: 1 }}
+                  onClick={() => handleDelete(prod.id)}
+                >
+                  Delete
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </Box>
   );
 };
 

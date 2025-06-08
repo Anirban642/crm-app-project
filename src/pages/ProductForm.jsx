@@ -51,9 +51,12 @@ const ProductForm = () => {
           brand: product.brand,
           category: product.category,
         });
+      } else {
+        // If product not found, redirect back to products
+        navigate('/products');
       }
     }
-  }, [id, products, isEdit, dispatch]);
+  }, [id, products, isEdit, dispatch, navigate]);
 
   const validationSchema = Yup.object().shape({
     title: Yup.string()
@@ -116,7 +119,7 @@ const ProductForm = () => {
         width: '60%',
         margin: 'auto',
         p: 3,
-        minHeight: '80vh', // optional for consistent height
+        minHeight: '80vh',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
