@@ -1,0 +1,22 @@
+export const CATEGORIES = [
+  'Smartphones',
+  'Laptops',
+  'Fragrances',
+  'Skincare',
+  'Groceries',
+  'Home Decoration',
+  'Furniture',
+  'Tops',
+  'Womens Dresses',
+  'Womens Shoes',
+  'Mens Shirts',
+  'Mens Shoes',
+  'Mens Watches',
+  'Womens Watches',
+  'Womens Bags',
+  'Womens Jewellery',
+  'Sunglasses',
+  'Automotive',
+  'Motorcycle',
+  'Lighting'
+];
